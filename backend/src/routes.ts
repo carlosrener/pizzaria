@@ -12,6 +12,8 @@ import { ListProductByCategoryController } from "./controllers/product/ListProdu
 import { CreateOrderController } from "./controllers/order/CreateOrderController";
 import { RemoveOrderController } from "./controllers/order/RemoveOrderController";
 import { AddItemToOrderController } from "./controllers/order/AddItemToOrderController";
+import { RemoveItemController } from "./controllers/order/RemoveItemController";
+
 
 
 
@@ -53,6 +55,7 @@ router.get(
 router.post("/order",isAuthenticated,new CreateOrderController().handle) //rota para abrir uma mesa
 router.delete("/order",isAuthenticated,new RemoveOrderController().handle) //rota para deletar mesa
 router.post("/order/add",isAuthenticated,new AddItemToOrderController().handle) //adicionar item na mesa
+router.delete("/order/remove",isAuthenticated,new RemoveItemController().handle) //rota para deletar um item dentro de uma mesa
 
 
 
