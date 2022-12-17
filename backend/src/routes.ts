@@ -13,6 +13,14 @@ import { CreateOrderController } from "./controllers/order/CreateOrderController
 import { RemoveOrderController } from "./controllers/order/RemoveOrderController";
 import { AddItemToOrderController } from "./controllers/order/AddItemToOrderController";
 import { RemoveItemController } from "./controllers/order/RemoveItemController";
+import { SendOrderController } from "./controllers/order/sendOrderController";
+import { ListOrdersController } from "./controllers/order/ListOrdersController";
+import { DetailsOrderController } from "./controllers/order/DetailsOrderController";
+import { FinishOrderController } from "./controllers/order/FinishOrderController";
+
+
+
+
 
 
 
@@ -56,8 +64,15 @@ router.post("/order",isAuthenticated,new CreateOrderController().handle) //rota 
 router.delete("/order",isAuthenticated,new RemoveOrderController().handle) //rota para deletar mesa
 router.post("/order/add",isAuthenticated,new AddItemToOrderController().handle) //adicionar item na mesa
 router.delete("/order/remove",isAuthenticated,new RemoveItemController().handle) //rota para deletar um item dentro de uma mesa
+router.put("/order/send",isAuthenticated,new SendOrderController().handle) //atualizar ordem
+router.get("/order",isAuthenticated,new ListOrdersController().handle) // listar todas a mesas decrescente
+router.get("/order/detail",isAuthenticated,new DetailsOrderController().handle); //rota listar detalhes order
+router.put("/order/finish",isAuthenticated,new FinishOrderController().handle); // rota finalizar uma mesa
 
 
 
 export { router };
+
+
+
 
