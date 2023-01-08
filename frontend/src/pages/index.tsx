@@ -8,6 +8,10 @@ import { Button } from "../components/ui/Button";
 import Link from "next/link";
 //import context
 import { AuthContext } from "../contexts/AuthContext";
+import { toast } from "react-toastify";
+import { canSSRGuest } from "../utils/canSSRAuth";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
+// import {GetServerSideProps} from 'next'
 
 export default function Home() {
   // recuperar o context
@@ -20,11 +24,20 @@ export default function Home() {
 
   async function handleLogin(event: FormEvent) {
     event.preventDefault();
+
+    if (email === "" || password === "") {
+      toast.error("Preencha todos o campos!");
+      return;
+    }
+    setLoading(true);
+
     let data = {
       email,
       password,
     };
     await signIn(data);
+
+    setLoading(false);
   }
 
   return (
@@ -50,7 +63,7 @@ export default function Home() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <Button type="submit" loading={false}>
+            <Button type="submit" loading={loading}>
               Acessar
             </Button>
           </form>
@@ -63,3 +76,10 @@ export default function Home() {
     </>
   );
 }
+
+//estrutura de server side
+export const getServerSideProps = canSSRGuest(async (ctx) => {
+  return {
+    props: {},
+  };
+});

@@ -1,13 +1,16 @@
+import { api } from "../services/apiClient";
 import { createContext, ReactNode, useState } from "react";
 import { destroyCookie, setCookie, parseCookies } from "nookies";
 import Router from "next/router";
-import { api } from "../services/apiClient";
+import {toast} from 'react-toastify'
+
 
 type AuthContextData = {
   user: UserProps;
   isAuthenticated: boolean;
   signIn: (credentials: SignInProps) => Promise<void>;
   signOut: () => void;
+  signUp: (credentials: SignUpProps) => Promise<void>;
 };
 
 type UserProps = {
@@ -17,6 +20,12 @@ type UserProps = {
 };
 
 type SignInProps = {
+  email: string;
+  password: string;
+};
+
+type SignUpProps = {
+  name: string;
   email: string;
   password: string;
 };
@@ -38,11 +47,12 @@ export function signOut() {
   }
 }
 
-//criar provider do context para prover
+//criar provider do context para prover para toda aplicação
 export function AuthProvider({ children }: AuthProviderprops) {
   const [user, setUser] = useState<UserProps>({ id: "", name: "", email: "" });
   const isAuthenticated = !!user;
 
+  ////////////////////METODO DE LOGIN///////////////////////////////
   async function signIn({ email, password }: SignInProps) {
     try {
       const response = await api.post("/auth", { email, password });
@@ -61,15 +71,35 @@ export function AuthProvider({ children }: AuthProviderprops) {
       //passar para proximas requisições o nosso token
       api.defaults.headers["Authorization"] = `Bearer ${token}`;
       //redirecionar o user para /dashboard
-      Router.push('/dashboard')
+      toast.success('Logado com Sucesso!')
+      Router.push("/dashboard");
 
     } catch (error) {
+      toast.error('Erro ao fazer login!')
       console.log("Error ao acessar", error);
     }
   }
+  ////////////////////METODO DE CADASTRAR///////////////////////////
+  async function signUp({name,email,password}:SignUpProps) {
+    try {
+      const response = api.post('/create',{
+        name,
+        email,
+        password
+      })
+      toast.success('Conta criada com Sucesso!')
+      Router.push('/')
+      
+    } catch (error) {
+      toast.error('Erro ao Cadastrar-se!')
+      console.log('erro ao cadastrar',error)
+    }
+  }
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, signIn, signOut,signUp }}>
       {children}
     </AuthContext.Provider>
   );
 }
+
+
