@@ -9,7 +9,7 @@ import Link from "next/link";
 //import context
 import { AuthContext } from "../contexts/AuthContext";
 import { toast } from "react-toastify";
-import { canSSRGuest } from "../utils/canSSRAuth";
+import { canSSRGuest } from "../utils/canSSRGuest";
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
 // import {GetServerSideProps} from 'next'
 

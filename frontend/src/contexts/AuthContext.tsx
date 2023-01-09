@@ -1,5 +1,5 @@
 import { api } from "../services/apiClient";
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useState, useEffect } from "react";
 import { destroyCookie, setCookie, parseCookies } from "nookies";
 import Router from "next/router";
 import {toast} from 'react-toastify'
@@ -49,8 +49,26 @@ export function signOut() {
 
 //criar provider do context para prover para toda aplicação
 export function AuthProvider({ children }: AuthProviderprops) {
-  const [user, setUser] = useState<UserProps>({ id: "", name: "", email: "" });
+  const [user, setUser] = useState<UserProps>();
   const isAuthenticated = !!user;
+
+  useEffect(() => {
+    //tentar pegar p token dentro do cookie
+    const {'@nextauth.token': token} = parseCookies();
+    if(token){
+      api.get('/userauth').then(response => {
+        const {id, name, email} = response.data;
+        setUser({
+          id,
+          name,
+          email
+        })
+      }).catch(()=>{
+        //se deu erro deslogamos o user
+        signOut();
+      })
+    }
+  }, [])
 
   ////////////////////METODO DE LOGIN///////////////////////////////
   async function signIn({ email, password }: SignInProps) {
